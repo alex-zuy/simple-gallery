@@ -1,4 +1,32 @@
 <resources>
     <string name="app_name">Simple gallery</string>
     <string name="action_settings">Settings</string>
+    <string name="pref_sliding_interval_key">PREF_SLIDING_INTERVAL</string>
+    <string name="pref_sliding_animation_key">PREF_SLIDING_ANIMATION</string>
+    <string name="pref_sliding_animation_title">Animation</string>
+    <string name="pref_sliding_animation_default">NONE</string>
+    <string-array name="pref_sliding_animation_option_values">
+        <item>NONE</item>
+        <item>FADE</item>
+    </string-array>
+    <string-array name="pref_sliding_animation_option_titles">
+        <item>None</item>
+        <item>Fade</item>
+    </string-array>
+    <string name="pref_data_source_type_key">PREF_DATA_SOURCE_TYPE</string>
+    <string name="pref_data_source_type_title">Data source</string>
+    <string name="pref_data_source_type_default">DIR</string>
+    <string-array name="pref_data_source_type_option_values">
+        <item>DIR</item>
+        <item>URL_LIST</item>
+    </string-array>
+    <string-array name="pref_data_source_type_option_titles">
+        <item>Directory</item>
+        <item>Url list</item>
+    </string-array>
+    <string name="pref_data_source_directory_key">PREF_DATA_SOURCE_DIRECTORY</string>
+    <string name="pref_data_source_directory_title">Image directory</string>
+    <string name="pref_data_source_directory_default"></string>
+    <string name="pref_data_source_url_list_key">PREF_DATA_SOURCE_URL_LIST</string>
+    <string name="directory_chooser_new_directory_name">New folder</string>
 </resources>

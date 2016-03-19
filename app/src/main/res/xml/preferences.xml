@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/pref_sliding_animation_title"
+        android:key="@string/pref_sliding_animation_key"
+        android:defaultValue="@string/pref_sliding_animation_default"
+        android:entries="@array/pref_sliding_animation_option_titles"
+        android:entryValues="@array/pref_sliding_animation_option_values"/>
+    <ListPreference
+        android:title="@string/pref_data_source_type_title"
+        android:key="@string/pref_data_source_type_key"
+        android:defaultValue="@string/pref_data_source_type_default"
+        android:entries="@array/pref_data_source_type_option_titles"
+        android:entryValues="@array/pref_data_source_type_option_values"/>
+    <Preference
+        android:title="@string/pref_data_source_directory_title"
+        android:key="@string/pref_data_source_directory_key"
+        android:defaultValue="@string/pref_data_source_directory_default"/>
+</PreferenceScreen>
