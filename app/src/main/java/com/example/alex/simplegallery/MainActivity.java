@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 
 import java.io.File;
 
@@ -68,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SliderController createSliderController() {
         try {
-            final ImageView imageView = (ImageView) findViewById(R.id.imageView);
-            return new SliderController(this, imageView, createDataSource(), getSlidingIntervalSeconds());
+            final ViewGroup root = (ViewGroup) findViewById(R.id.root);
+            return new SliderController(this, root, createDataSource(),
+                getSlidingIntervalSeconds(), getAnimationType());
         }
         catch (final DataSourceConfigurationException e) {
             showErrorInDialog(e.getMessage());
@@ -129,6 +130,17 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             return new DirectoryDataSource(file, displayMetrics);
+        }
+    }
+
+    private AnimationType getAnimationType() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String animation = preferences.getString(getString(R.string.pref_sliding_animation_key), "");
+        try {
+            return AnimationType.valueOf(animation);
+        }
+        catch (final IllegalArgumentException e) {
+            throw new RuntimeException("Invalid animation type: " + animation);
         }
     }
 
