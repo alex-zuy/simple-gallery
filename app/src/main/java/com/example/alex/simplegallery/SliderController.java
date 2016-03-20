@@ -55,20 +55,16 @@ public class SliderController {
     }
 
     public void start() {
-        isRunning = true;
         //show first image as soon, as it will be loaded
         nextSwitchTimestamp = System.currentTimeMillis();
+        isRunning = true;
         if(dataSource.hasNextImage()) {
-            next();
+            dataSource.prepareNextImage();
         }
     }
 
     public void destroy() {
         dataSource.destroy();
-    }
-
-    private void next() {
-        dataSource.prepareNextImage();
     }
 
     private class BitmapLoadedCallback implements BitmapConsumer {
@@ -85,7 +81,7 @@ public class SliderController {
                         performTransition(bitmap);
                         nextSwitchTimestamp = System.currentTimeMillis() + slidingIntervalMilliseconds;
                         if (dataSource.hasNextImage()) {
-                            next();
+                            dataSource.prepareNextImage();
                         }
                     }
                 }, delay);
@@ -99,8 +95,7 @@ public class SliderController {
         final ImageView disappearing = oddImage == currentImageView ? oddImage : evenImage;
         currentImageView = appearing;
         currentImageView.setImageBitmap(bitmap);
-        TransitionManager.beginDelayedTransition(root,
-                getTransition(appearing, disappearing, duration));
+        TransitionManager.beginDelayedTransition(root, getTransition(appearing, disappearing, duration));
         root.addView(appearing);
         root.removeView(disappearing);
     }
@@ -138,7 +133,7 @@ public class SliderController {
         isRunning = true;
         nextSwitchTimestamp = System.currentTimeMillis();
         if(dataSource.hasNextImage()) {
-            next();
+            dataSource.prepareNextImage();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.alex.simplegallery;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -22,16 +23,7 @@ public class DurationPreference extends DialogPreference {
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-        final NumberPicker picker = (NumberPicker) view.findViewById(R.id.numberPicker);
-        picker.setMinValue(1);
-        picker.setMaxValue(60);
-        picker.setValue(this.getPersistedInt(getDefaultValue()));
-        picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                currentValue = newVal;
-            }
-        });
+        setUpDurationPicker((NumberPicker) view.findViewById(R.id.numberPicker));
     }
 
     @Override
@@ -57,6 +49,19 @@ public class DurationPreference extends DialogPreference {
     }
 
     private int getDefaultValue() {
-        return Integer.valueOf(getContext().getResources().getString(R.string.pref_sliding_interval_default));
+        return getContext().getResources().getInteger(R.integer.pref_sliding_interval_default);
+    }
+
+    private void setUpDurationPicker(final NumberPicker picker) {
+        final Resources resources = getContext().getResources();
+        picker.setMinValue(resources.getInteger(R.integer.pref_sliding_interval_min));
+        picker.setMaxValue(resources.getInteger(R.integer.pref_sliding_interval_max));
+        picker.setValue(this.getPersistedInt(getDefaultValue()));
+        picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                currentValue = newVal;
+            }
+        });
     }
 }

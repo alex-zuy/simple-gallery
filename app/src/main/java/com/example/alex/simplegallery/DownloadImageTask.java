@@ -73,11 +73,12 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
         try {
             publishProgress(DOWNLOAD_STARTED_PROGRESS);
             final URLConnection connection = imageUrl.openConnection();
+            //force establishing connection to fail with exception if something wrong, e.g. network unavailable
             connection.connect();
-            final int imageSize = Integer.valueOf(connection.getHeaderField(CONTENT_LENGTH_HEADER));
-            inputStream = connection.getInputStream();
             file = getTempFile();
+            inputStream = connection.getInputStream();
             outputStream = new BufferedOutputStream(new FileOutputStream(file));
+            final int imageSize = Integer.valueOf(connection.getHeaderField(CONTENT_LENGTH_HEADER));
             performDownloadPublishingProgress(inputStream, outputStream, imageSize);
             publishProgress(DOWNLOAD_FINISHED_PROGRESS);
         } catch (final IOException e) {

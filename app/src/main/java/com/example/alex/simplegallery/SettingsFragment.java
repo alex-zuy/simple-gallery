@@ -1,8 +1,6 @@
 package com.example.alex.simplegallery;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -35,11 +33,10 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference(preferenceKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Intent intent = new Intent();
-                intent.setClass(getActivity(), UrlListActivity.class);
                 final Set<String> urls = getPreferenceManager().getSharedPreferences()
                         .getStringSet(preferenceKey, new HashSet<String>());
-                intent.putStringArrayListExtra(UrlListActivity.URL_LIST, Lists.newArrayList(urls));
+                final Intent intent = new Intent(getActivity(), UrlListActivity.class)
+                        .putStringArrayListExtra(UrlListActivity.URL_LIST, Lists.newArrayList(urls));
                 startActivityForResult(intent, URL_LIST_ACTIVITY_REQUEST);
                 return true;
             }
@@ -47,13 +44,12 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setUpDirectoryPreferenceHandling() {
-        final String preferenceKey = getResources().getString(R.string.pref_data_source_directory_key);
+        final String preferenceKey = getString(R.string.pref_data_source_directory_key);
         findPreference(preferenceKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Intent intent = new Intent();
-                intent.setClass(getActivity(), DirectoryChooserActivity.class);
-                intent.putExtra(DirectoryChooserActivity.EXTRA_CONFIG, getDirectoryChooserConfig());
+                final Intent intent = new Intent(getActivity(), DirectoryChooserActivity.class)
+                        .putExtra(DirectoryChooserActivity.EXTRA_CONFIG, getDirectoryChooserConfig());
                 startActivityForResult(intent, CHOOSE_DIRECTORY_ACTIVITY_REQUEST);
                 return true;
             }
@@ -61,14 +57,14 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private DirectoryChooserConfig getDirectoryChooserConfig() {
-        final String preferenceKey = getResources().getString(R.string.pref_data_source_directory_key);
-        final String defaultDir = getResources().getString(R.string.pref_data_source_directory_default);
-        final String initialDir = getPreferenceManager().getSharedPreferences().getString(preferenceKey, defaultDir);
+        final String defaultDir = getString(R.string.pref_data_source_directory_default);
+        final String initialDir = getPreferenceManager().getSharedPreferences()
+                .getString(getString(R.string.pref_data_source_directory_key), defaultDir);
         return DirectoryChooserConfig.builder()
             .initialDirectory(initialDir)
             .allowReadOnlyDirectory(true)
             .allowNewDirectoryNameModification(false)
-            .newDirectoryName(getResources().getString(R.string.directory_chooser_new_directory_name))
+            .newDirectoryName(getString(R.string.directory_chooser_new_directory_name))
             .build();
     }
 
@@ -78,10 +74,9 @@ public class SettingsFragment extends PreferenceFragment {
             && resultCode == DirectoryChooserActivity.RESULT_CODE_DIR_SELECTED)
         {
             final String directory = data.getStringExtra(DirectoryChooserActivity.RESULT_SELECTED_DIR);
-            final SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            final Editor editor = preferences.edit();
-            editor.putString(getResources().getString(R.string.pref_data_source_directory_key), directory);
-            editor.commit();
+            getPreferenceManager().getSharedPreferences().edit()
+                    .putString(getString(R.string.pref_data_source_directory_key), directory)
+                    .commit();
         }
         else if (requestCode == URL_LIST_ACTIVITY_REQUEST
             && resultCode == UrlListActivity.URL_LIST_EDITED)

@@ -1,7 +1,6 @@
 package com.example.alex.simplegallery;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 
 import java.io.File;
@@ -51,8 +50,8 @@ public class UrlListDataSource implements DataSource {
 
     @Override
     public void prepareNextImage() {
-        lastTask = new DownloadImageTask(context, new FileLoadedCallback(), progressListener);
         currentUrlIndex = (currentUrlIndex + 1) % urls.size();
+        lastTask = new DownloadImageTask(context, new FileLoadedCallback(), progressListener);
         lastTask.execute(urls.get(currentUrlIndex));
     }
 

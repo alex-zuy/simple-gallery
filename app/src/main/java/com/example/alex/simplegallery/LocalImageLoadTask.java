@@ -21,8 +21,7 @@ public class LocalImageLoadTask extends AsyncTask<File, Integer, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(final File... params) {
-        final File file = params[0];
-        return loadSampledBitmap(file);
+        return loadSampledBitmap(params[0]);
     }
 
     private Bitmap loadSampledBitmap(final File file) {

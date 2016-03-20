@@ -27,8 +27,6 @@ public class UrlListActivity extends AppCompatActivity {
 
     private final Set<String> urls = new HashSet<String>();
 
-    private int maxUrlsCount;
-
     private int urlFieldsCount;
 
     @Override
@@ -36,15 +34,15 @@ public class UrlListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_list);
         urls.addAll(getIntent().getStringArrayListExtra(URL_LIST));
+        urlFieldsCount = urls.size();
         setUpTable((TableLayout) findViewById(R.id.table));
     }
 
     private void setUpTable(final TableLayout table) {
-        maxUrlsCount = getResources().getInteger(R.integer.pref_data_source_url_list_max_count);
-        urlFieldsCount = urls.size();
         for (final String value : urls) {
             addRowToTable(table, value);
         }
+        final int maxUrlsCount = getResources().getInteger(R.integer.pref_data_source_url_list_max_count);
         final Button addButton = (Button) findViewById(R.id.add_url);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +63,7 @@ public class UrlListActivity extends AppCompatActivity {
         final TableRow row = new TableRow(this);
         row.addView(removeButton, new TableRow.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 1f));
         row.addView(editText, new TableRow.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 4f));
+        table.addView(row);
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,12 +88,10 @@ public class UrlListActivity extends AppCompatActivity {
 
             }
         });
-        table.addView(row);
     }
 
     public void okClicked(final View okButton) {
-        final Intent intent = new Intent();
-        intent.putStringArrayListExtra(URL_LIST, Lists.newArrayList(urls));
+        final Intent intent = new Intent().putStringArrayListExtra(URL_LIST, Lists.newArrayList(urls));
         setResult(URL_LIST_EDITED, intent);
         finish();
     }

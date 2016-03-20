@@ -58,12 +58,21 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(controller != null) {
+            controller.destroy();
+        }
+    }
+
     private void setUpSettingsOnLongClick() {
         final View view = findViewById(R.id.root);
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                switchToSettingsActivity();
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             }
         });
@@ -71,11 +80,11 @@ public class MainActivity extends Activity {
 
     private SliderController createSliderController() {
         try {
-            final ViewGroup root = (ViewGroup) findViewById(R.id.animation_root);
+            final ViewGroup animationRoot = (ViewGroup) findViewById(R.id.animation_root);
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
             final DataSource dataSource = createDataSource();
             dataSource.setLoadProgressListener(new DownloadProgressHandler(progressBar));
-            return new SliderController(this, root, dataSource,
+            return new SliderController(this, animationRoot, dataSource,
                 getSlidingIntervalSeconds(), getAnimationType());
         }
         catch (final DataSourceConfigurationException e) {
@@ -99,15 +108,9 @@ public class MainActivity extends Activity {
                 .getInt(getString(R.string.pref_sliding_interval_key), 2);
     }
 
-    private void switchToSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
     private DataSource createDataSource() {
-        final String preferredDataSourceTypeKey = getString(R.string.pref_data_source_type_key);
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String preferredDataSourceType = preferences.getString(preferredDataSourceTypeKey, "");
+        final String preferredDataSourceType = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(getString(R.string.pref_data_source_type_key), "");
         if(preferredDataSourceType.equals(getString(R.string.data_source_type_dir))) {
             return createDirectoryDataSource();
         }
@@ -120,10 +123,8 @@ public class MainActivity extends Activity {
     }
 
     private DataSource createDirectoryDataSource() {
-        final String directoryPreferenceKey = getString(R.string.pref_data_source_directory_key);
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String directoryPath = preferences.getString(directoryPreferenceKey, "");
-        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        final String directoryPath = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(getString(R.string.pref_data_source_directory_key), "");
         final File file = new File(directoryPath);
         if(!file.exists()) {
             throw new DataSourceConfigurationException(getString(R.string.err_data_source_dir_not_exists));
@@ -135,6 +136,7 @@ public class MainActivity extends Activity {
             throw new DataSourceConfigurationException(getString(R.string.err_data_source_dir_not_readable));
         }
         else {
+            final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
             return new DirectoryDataSource(file, displayMetrics);
         }
     }
@@ -155,8 +157,8 @@ public class MainActivity extends Activity {
     }
 
     private AnimationType getAnimationType() {
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String animation = preferences.getString(getString(R.string.pref_sliding_animation_key), "");
+        final String animation = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(getString(R.string.pref_sliding_animation_key), "");
         try {
             return AnimationType.valueOf(animation);
         }
@@ -190,6 +192,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void errorOccurred(Throwable e) {
+            progressBar.setVisibility(View.INVISIBLE);
             controller.pause();
             showErrorInDialog(e.getLocalizedMessage());
         }
