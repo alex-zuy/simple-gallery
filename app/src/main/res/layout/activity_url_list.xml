@@ -3,23 +3,42 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TableLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/table">
+        android:id="@+id/scrollView"
+        android:layout_gravity="bottom"
+        android:layout_weight="50">
 
-    </TableLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/table"
+                android:layout_gravity="top">
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/url_data_source_add"
-        android:id="@+id/add_url"/>
+        android:id="@+id/add_url"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="1">
 
         <Button
             android:text="@string/ok_caption"
