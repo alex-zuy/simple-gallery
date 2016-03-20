@@ -1,9 +1,14 @@
 package com.example.alex.simplegallery;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 import net.rdrei.android.dirchooser.DirectoryChooserConfig;
@@ -13,6 +18,9 @@ import java.util.Set;
 
 import autovalue.shaded.com.google.common.common.collect.Lists;
 import autovalue.shaded.com.google.common.common.collect.Sets;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -48,18 +56,48 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference(preferenceKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Intent intent = new Intent(getActivity(), DirectoryChooserActivity.class)
-                        .putExtra(DirectoryChooserActivity.EXTRA_CONFIG, getDirectoryChooserConfig());
-                startActivityForResult(intent, CHOOSE_DIRECTORY_ACTIVITY_REQUEST);
+                showStorageTypeSelectDialog();
                 return true;
             }
         });
     }
 
-    private DirectoryChooserConfig getDirectoryChooserConfig() {
-        final String defaultDir = getString(R.string.pref_data_source_directory_default);
-        final String initialDir = getPreferenceManager().getSharedPreferences()
-                .getString(getString(R.string.pref_data_source_directory_key), defaultDir);
+    private void showStorageTypeSelectDialog() {
+        final Button internal = new Button(getActivity());
+        internal.setText(R.string.internal_storage);
+        final Button external = new Button(getActivity());
+        external.setText(R.string.external_storage);
+        final LinearLayout layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(internal, new ActionBar.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        layout.addView(external, new ActionBar.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setView(layout)
+                .create();
+        internal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDirectoryChooserActivity(getActivity().getFilesDir().getAbsolutePath());
+                dialog.dismiss();
+            }
+        });
+        external.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDirectoryChooserActivity("");
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void startDirectoryChooserActivity(final String initialDir) {
+        final Intent intent = new Intent(getActivity(), DirectoryChooserActivity.class)
+                .putExtra(DirectoryChooserActivity.EXTRA_CONFIG, getDirectoryChooserConfig(initialDir));
+        startActivityForResult(intent, CHOOSE_DIRECTORY_ACTIVITY_REQUEST);
+    }
+
+    private DirectoryChooserConfig getDirectoryChooserConfig(final String initialDir) {
         return DirectoryChooserConfig.builder()
             .initialDirectory(initialDir)
             .allowReadOnlyDirectory(true)
