@@ -40,7 +40,6 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         final int value = values[0];
-        System.out.println("On progress update" + value);
         if(value == DOWNLOAD_STARTED_PROGRESS) {
             listener.progressStarted();
         }
@@ -76,7 +75,6 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
             final URLConnection connection = imageUrl.openConnection();
             connection.connect();
             final int imageSize = Integer.valueOf(connection.getHeaderField(CONTENT_LENGTH_HEADER));
-            System.out.println("Image size: " + imageSize);
             inputStream = connection.getInputStream();
             file = getTempFile();
             outputStream = new BufferedOutputStream(new FileOutputStream(file));

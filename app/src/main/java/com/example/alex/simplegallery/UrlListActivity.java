@@ -93,7 +93,6 @@ public class UrlListActivity extends AppCompatActivity {
     }
 
     public void okClicked(final View okButton) {
-        System.out.println("Ok");
         final Intent intent = new Intent();
         intent.putStringArrayListExtra(URL_LIST, Lists.newArrayList(urls));
         setResult(URL_LIST_EDITED, intent);
@@ -101,7 +100,6 @@ public class UrlListActivity extends AppCompatActivity {
     }
 
     public void cancelClicked(final View cancelButton) {
-        System.out.println("Cancel");
         finish();
     }
 }
