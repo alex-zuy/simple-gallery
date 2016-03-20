@@ -64,7 +64,7 @@ public class UrlListActivity extends AppCompatActivity {
         editText.setText(value);
         final TableRow row = new TableRow(this);
         row.addView(removeButton, new TableRow.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 1f));
-        row.addView(editText, new TableRow.LayoutParams(MATCH_PARENT, MATCH_PARENT, 4f));
+        row.addView(editText, new TableRow.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 4f));
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
