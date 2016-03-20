@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -72,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SliderController createSliderController() {
         try {
-            final ViewGroup root = (ViewGroup) findViewById(R.id.root);
-            return new SliderController(this, root, createDataSource(),
+            final ViewGroup root = (ViewGroup) findViewById(R.id.animation_root);
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+            final DataSource dataSource = createDataSource();
+            dataSource.setLoadProgressListener(new ProgressBarHandler(progressBar));
+            return new SliderController(this, root, dataSource,
                 getSlidingIntervalSeconds(), getAnimationType());
         }
         catch (final DataSourceConfigurationException e) {
@@ -160,6 +165,35 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (final IllegalArgumentException e) {
             throw new RuntimeException("Invalid animation type: " + animation);
+        }
+    }
+
+    private static class ProgressBarHandler implements LoadProgressListener {
+
+        private final ProgressBar progressBar;
+
+        private ProgressBarHandler(final ProgressBar progressBar) {
+            this.progressBar = progressBar;
+        }
+
+        @Override
+        public void progressStarted() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void progressUpdated(int percentCompleted) {
+            progressBar.setProgress(percentCompleted);
+        }
+
+        @Override
+        public void progressCompleted() {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void errorOccurred(Throwable e) {
+
         }
     }
 

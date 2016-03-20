@@ -25,10 +25,13 @@ public class UrlListDataSource implements DataSource {
 
     private BitmapConsumer consumer;
 
+    private LoadProgressListener progressListener;
+
     public UrlListDataSource(final Context context, final DisplayMetrics displayMetrics, final Set<URL> urls) {
         this.context = context;
         this.displayMetrics = displayMetrics;
         this.urls = Lists.newArrayList(urls);
+        setLoadProgressListener(null);
     }
 
     @Override
@@ -37,8 +40,18 @@ public class UrlListDataSource implements DataSource {
     }
 
     @Override
+    public void setLoadProgressListener(final LoadProgressListener progressListener) {
+        if(progressListener != null) {
+            this.progressListener = progressListener;
+        }
+        else {
+            this.progressListener = new NoOpLoadProgressListener();
+        }
+    }
+
+    @Override
     public void prepareNextImage() {
-        lastTask = new DownloadImageTask(context, new FileLoadedCallback());
+        lastTask = new DownloadImageTask(context, new FileLoadedCallback(), progressListener);
         currentUrlIndex = (currentUrlIndex + 1) % urls.size();
         lastTask.execute(urls.get(currentUrlIndex));
     }

@@ -1,6 +1,5 @@
 package com.example.alex.simplegallery;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.util.DisplayMetrics;
@@ -40,6 +39,11 @@ public class DirectoryDataSource implements DataSource {
     @Override
     public void setConsumer(final BitmapConsumer consumer) {
         this.consumer = consumer;
+    }
+
+    @Override
+    public void setLoadProgressListener(LoadProgressListener progressListener) {
+        // we will not report progress
     }
 
     @Override

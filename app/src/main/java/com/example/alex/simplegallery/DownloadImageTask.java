@@ -27,9 +27,27 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
 
     private final DownloadedFileConsumer consumer;
 
-    public DownloadImageTask(final Context context, final DownloadedFileConsumer consumer) {
+    private final LoadProgressListener listener;
+
+    public DownloadImageTask(final Context context, final DownloadedFileConsumer consumer, final LoadProgressListener listener) {
         this.context = context;
         this.consumer = consumer;
+        this.listener = listener;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        final int value = values[0];
+        System.out.println("On progress update" + value);
+        if(value == DOWNLOAD_STARTED_PROGRESS) {
+            listener.progressStarted();
+        }
+        else if(value == DOWNLOAD_FINISHED_PROGRESS) {
+            listener.progressCompleted();
+        }
+        else {
+            listener.progressUpdated(value);
+        }
     }
 
     @Override
@@ -86,7 +104,7 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
         while((bytesRead = inputStream.read(buffer)) > 0) {
             outputStream.write(buffer, 0, bytesRead);
             totalBytesRead += bytesRead;
-            publishProgress(Math.round(totalBytesRead / imageSize));
+            publishProgress(Math.round(100.f * totalBytesRead / imageSize));
         }
     }
 }

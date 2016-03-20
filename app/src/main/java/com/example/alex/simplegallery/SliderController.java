@@ -1,6 +1,5 @@
 package com.example.alex.simplegallery;
 
-import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -79,12 +78,12 @@ public class SliderController {
             if (isRunning) {
                 final long leftToSwitchByInterval = nextSwitchTimestamp - System.currentTimeMillis();
                 final long delay = leftToSwitchByInterval > 0 ? leftToSwitchByInterval : 0;
-                nextSwitchTimestamp += slidingIntervalMilliseconds;
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         performTransition(bitmap);
+                        nextSwitchTimestamp = System.currentTimeMillis() + slidingIntervalMilliseconds;
                         if (dataSource.hasNextImage()) {
                             next();
                         }

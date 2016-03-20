@@ -10,4 +10,20 @@
     tools:context="com.example.alex.simplegallery.MainActivity"
     android:id="@+id/root">
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="false"
+        android:visibility="invisible"
+        android:max="100" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/animation_root">
+
+    </RelativeLayout>
 </RelativeLayout>
