@@ -12,6 +12,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             return createDirectoryDataSource();
         }
         else if(preferredDataSourceType.equals(getString(R.string.data_source_type_url_list))) {
-            throw new UnsupportedOperationException("This data source type is not implemented yet");
+            return createUrlListDataSource();
         }
         else {
             throw new RuntimeException("Unknown data source type: " + preferredDataSourceType);
@@ -131,6 +135,21 @@ public class MainActivity extends AppCompatActivity {
         else {
             return new DirectoryDataSource(file, displayMetrics);
         }
+    }
+
+    private DataSource createUrlListDataSource() {
+        final String urlListPreferenceKey = getString(R.string.pref_data_source_url_list_key);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final Set<URL> urls = new HashSet<>();
+        for(final String url : preferences.getStringSet(urlListPreferenceKey, new HashSet<String>())) {
+            try {
+                urls.add(new URL(url));
+            }
+            catch (final MalformedURLException e) {
+                throw new DataSourceConfigurationException(e.getLocalizedMessage(), e);
+            }
+        }
+        return new UrlListDataSource(this, getResources().getDisplayMetrics(), urls);
     }
 
     private AnimationType getAnimationType() {
