@@ -31,6 +31,7 @@
                 android:value="com.example.alex.simplegallery.MainActivity" />
         </activity>
         <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity"/>
+        <activity android:name=".UrlListActivity"/>
     </application>
 
 </manifest>

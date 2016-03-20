@@ -32,9 +32,15 @@
     <string name="pref_data_source_directory_title">Image directory</string>
     <string name="pref_data_source_directory_default"></string>
     <string name="pref_data_source_url_list_key">PREF_DATA_SOURCE_URL_LIST</string>
+    <string name="pref_data_source_url_list_title">Url list</string>
+    <string-array name="pref_data_source_url_list_default"></string-array>
     <string name="directory_chooser_new_directory_name">New folder</string>
+    <string name="url_data_source_add">Add one more</string>
+    <string name="ok_caption">OK</string>
+    <string name="cancel_caption">Cancel</string>
     <string name="err_data_source_dir_is_not_dir">Configured directory path does not points to directory</string>
     <string name="err_data_source_dir_not_exists">Configured directory path does not exist</string>
     <string name="err_data_source_dir_not_readable">Configured directory is not readable</string>
     <string name="error_dialog_title">Error</string>
+    <integer name="pref_data_source_url_list_max_count">6</integer>
 </resources>

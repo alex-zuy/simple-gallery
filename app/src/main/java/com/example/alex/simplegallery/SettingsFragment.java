@@ -10,15 +10,40 @@ import android.preference.PreferenceFragment;
 import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 import net.rdrei.android.dirchooser.DirectoryChooserConfig;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import autovalue.shaded.com.google.common.common.collect.Lists;
+import autovalue.shaded.com.google.common.common.collect.Sets;
+
 public class SettingsFragment extends PreferenceFragment {
 
     private final int CHOOSE_DIRECTORY_ACTIVITY_REQUEST = 1782;
+
+    private final int URL_LIST_ACTIVITY_REQUEST = 931843;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         setUpDirectoryPreferenceHandling();
+        setUpUrlListPreferenceHandling();
+    }
+
+    private void setUpUrlListPreferenceHandling() {
+        final String preferenceKey = getString(R.string.pref_data_source_url_list_key);
+        findPreference(preferenceKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final Intent intent = new Intent();
+                intent.setClass(getActivity(), UrlListActivity.class);
+                final Set<String> urls = getPreferenceManager().getSharedPreferences()
+                        .getStringSet(preferenceKey, new HashSet<String>());
+                intent.putStringArrayListExtra(UrlListActivity.URL_LIST, Lists.newArrayList(urls));
+                startActivityForResult(intent, URL_LIST_ACTIVITY_REQUEST);
+                return true;
+            }
+        });
     }
 
     private void setUpDirectoryPreferenceHandling() {
@@ -57,6 +82,14 @@ public class SettingsFragment extends PreferenceFragment {
             final Editor editor = preferences.edit();
             editor.putString(getResources().getString(R.string.pref_data_source_directory_key), directory);
             editor.commit();
+        }
+        else if (requestCode == URL_LIST_ACTIVITY_REQUEST
+            && resultCode == UrlListActivity.URL_LIST_EDITED)
+        {
+            final Set<String> urls = Sets.newHashSet(data.getStringArrayListExtra(UrlListActivity.URL_LIST));
+            getPreferenceManager().getSharedPreferences().edit()
+                .putStringSet(getString(R.string.pref_data_source_url_list_key), urls)
+                .commit();
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);
