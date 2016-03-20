@@ -1,5 +1,7 @@
 package com.example.alex.simplegallery;
 
+import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -42,7 +44,9 @@ public class SliderController {
         this.slidingIntervalMilliseconds = slidingIntervalSeconds * 1000;
         root = slideshowRoot;
         evenImage = new ImageView(context);
+        evenImage.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         oddImage = new ImageView(context);
+        oddImage.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         currentImageView = oddImage;
         dataSource.setConsumer(new BitmapLoadedCallback());
     }
