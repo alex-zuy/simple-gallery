@@ -29,6 +29,8 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
 
     private final LoadProgressListener listener;
 
+    private Throwable throwable;
+
     public DownloadImageTask(final Context context, final DownloadedFileConsumer consumer, final LoadProgressListener listener) {
         this.context = context;
         this.consumer = consumer;
@@ -52,7 +54,12 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
 
     @Override
     protected void onPostExecute(File file) {
-        consumer.consume(file);
+        if(throwable == null) {
+            consumer.consume(file);
+        }
+        else {
+            listener.errorOccurred(throwable);
+        }
     }
 
     @Override
@@ -65,17 +72,19 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
         OutputStream outputStream = null;
         final File file;
         try {
+            publishProgress(DOWNLOAD_STARTED_PROGRESS);
             final URLConnection connection = imageUrl.openConnection();
+            connection.connect();
             final int imageSize = Integer.valueOf(connection.getHeaderField(CONTENT_LENGTH_HEADER));
             System.out.println("Image size: " + imageSize);
             inputStream = connection.getInputStream();
             file = getTempFile();
             outputStream = new BufferedOutputStream(new FileOutputStream(file));
-            publishProgress(DOWNLOAD_STARTED_PROGRESS);
             performDownloadPublishingProgress(inputStream, outputStream, imageSize);
             publishProgress(DOWNLOAD_FINISHED_PROGRESS);
         } catch (final IOException e) {
-            throw new RuntimeException("An error occured while loading image", e);
+            throwable = e;
+            return null;
         }
         finally {
             for(final Closeable stream : new Closeable[]{inputStream, outputStream}) {

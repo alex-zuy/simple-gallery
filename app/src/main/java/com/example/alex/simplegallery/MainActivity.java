@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             final ViewGroup root = (ViewGroup) findViewById(R.id.animation_root);
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
             final DataSource dataSource = createDataSource();
-            dataSource.setLoadProgressListener(new ProgressBarHandler(progressBar));
+            dataSource.setLoadProgressListener(new DownloadProgressHandler(progressBar));
             return new SliderController(this, root, dataSource,
                 getSlidingIntervalSeconds(), getAnimationType());
         }
@@ -168,11 +168,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static class ProgressBarHandler implements LoadProgressListener {
+    private class DownloadProgressHandler implements LoadProgressListener {
 
         private final ProgressBar progressBar;
 
-        private ProgressBarHandler(final ProgressBar progressBar) {
+        private DownloadProgressHandler(final ProgressBar progressBar) {
             this.progressBar = progressBar;
         }
 
@@ -193,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void errorOccurred(Throwable e) {
-
+            controller.pause();
+            showErrorInDialog(e.getLocalizedMessage());
         }
     }
 
