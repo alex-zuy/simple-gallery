@@ -78,10 +78,14 @@ public class DownloadImageTask extends AsyncTask<URL, Integer, File> {
             file = getTempFile();
             inputStream = connection.getInputStream();
             outputStream = new BufferedOutputStream(new FileOutputStream(file));
-            final int imageSize = Integer.valueOf(connection.getHeaderField(CONTENT_LENGTH_HEADER));
+            final String contentLength = connection.getHeaderField(CONTENT_LENGTH_HEADER);
+            if(contentLength == null) {
+                throw new RuntimeException("No content length provided.");
+            }
+            final int imageSize = Integer.valueOf(contentLength);
             performDownloadPublishingProgress(inputStream, outputStream, imageSize);
             publishProgress(DOWNLOAD_FINISHED_PROGRESS);
-        } catch (final IOException e) {
+        } catch (final Throwable e) {
             throwable = e;
             return null;
         }
