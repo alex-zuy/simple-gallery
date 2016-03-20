@@ -45,4 +45,6 @@
     <string name="err_data_source_dir_not_readable">Configured directory is not readable</string>
     <string name="error_dialog_title">Error</string>
     <integer name="pref_data_source_url_list_max_count">6</integer>
+    <string name="internal_storage">Internal storage</string>
+    <string name="external_storage">External storage</string>
 </resources>

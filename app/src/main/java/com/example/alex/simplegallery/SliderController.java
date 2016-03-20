@@ -14,8 +14,6 @@ import android.widget.ImageView;
 
 public class SliderController {
 
-    private final Context context;
-
     private final DataSource dataSource;
 
     private final int slidingIntervalMilliseconds;
@@ -37,7 +35,6 @@ public class SliderController {
     public SliderController(final Context context, final ViewGroup slideshowRoot,
         final DataSource dataSource, final int slidingIntervalSeconds, final AnimationType animationType)
     {
-        this.context = context;
         this.animationType = animationType;
         this.dataSource = dataSource;
         this.slidingIntervalMilliseconds = slidingIntervalSeconds * 1000;
@@ -90,7 +87,7 @@ public class SliderController {
     }
 
     private void performTransition(final Bitmap bitmap) {
-        final int duration = 1000;
+        final int duration = 800;
         final ImageView appearing = evenImage != currentImageView ? evenImage : oddImage;
         final ImageView disappearing = oddImage == currentImageView ? oddImage : evenImage;
         currentImageView = appearing;
