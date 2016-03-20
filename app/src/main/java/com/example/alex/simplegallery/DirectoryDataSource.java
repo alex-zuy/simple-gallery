@@ -1,5 +1,6 @@
 package com.example.alex.simplegallery;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.util.DisplayMetrics;
@@ -19,6 +20,8 @@ public class DirectoryDataSource implements DataSource {
 
     private int currentFileIndex;
 
+    private BitmapConsumer consumer;
+
     private LocalImageLoadTask lastTask;
 
     public DirectoryDataSource(final File directory, final DisplayMetrics displayMetrics) {
@@ -28,10 +31,15 @@ public class DirectoryDataSource implements DataSource {
     }
 
     @Override
-    public void prepareNextImage(BitmapConsumer consumer) {
+    public void prepareNextImage() {
         lastTask = new LocalImageLoadTask(displayMetrics, consumer);
         currentFileIndex = (currentFileIndex + 1) % files.size();
         lastTask.execute(files.get(currentFileIndex));
+    }
+
+    @Override
+    public void setConsumer(final BitmapConsumer consumer) {
+        this.consumer = consumer;
     }
 
     @Override

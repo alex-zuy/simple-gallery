@@ -44,6 +44,7 @@ public class SliderController {
         evenImage = new ImageView(context);
         oddImage = new ImageView(context);
         currentImageView = oddImage;
+        dataSource.setConsumer(new BitmapLoadedCallback());
     }
 
     public boolean isRunning() {
@@ -64,26 +65,29 @@ public class SliderController {
     }
 
     private void next() {
-        dataSource.prepareNextImage(new BitmapConsumer() {
-            @Override
-            public void consume(final Bitmap bitmap) {
-                if (isRunning) {
-                    final long leftToSwitchByInterval = nextSwitchTimestamp - System.currentTimeMillis();
-                    final long delay = leftToSwitchByInterval > 0 ? leftToSwitchByInterval : 0;
-                    nextSwitchTimestamp += slidingIntervalMilliseconds;
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            performTransition(bitmap);
-                            if (dataSource.hasNextImage()) {
-                                next();
-                            }
+        dataSource.prepareNextImage();
+    }
+
+    private class BitmapLoadedCallback implements BitmapConsumer {
+
+        @Override
+        public void consume(final Bitmap bitmap) {
+            if (isRunning) {
+                final long leftToSwitchByInterval = nextSwitchTimestamp - System.currentTimeMillis();
+                final long delay = leftToSwitchByInterval > 0 ? leftToSwitchByInterval : 0;
+                nextSwitchTimestamp += slidingIntervalMilliseconds;
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        performTransition(bitmap);
+                        if (dataSource.hasNextImage()) {
+                            next();
                         }
-                    }, delay);
-                }
+                    }
+                }, delay);
             }
-        });
+        }
     }
 
     private void performTransition(final Bitmap bitmap) {
